@@ -1,96 +1,53 @@
 package com.egen.model;
 
 import com.egen.model.enums.OrderStatus;
-
+import com.egen.model.enums.ShipmentType;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import lombok.Getter;
+import lombok.Setter;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
+@Getter
+@Setter
 @Entity
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Order {
+
     @Id
-    @Column(name = "order_id")
     private  String id;
 
-    @Column(name = "order_customer_id")
+    private String orderId;
+
     private String customerId;
 
-    @Column(name = "order_date")
-    private ZonedDateTime orderDate;
+    private double subTotal;
 
-    @Column(name = "order_creation_date")
-    private ZonedDateTime orderCreationDate;
+    private double tax;
 
-    @Column(name = "order_status")
+    private double totalAmount;
+
+    private ZonedDateTime createdAt;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
-    private List<OrderPayment> paymentList = new ArrayList<>();
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    private Address shippingAddress;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<OrderItems> itemsList = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private ShipmentType shipmentType;
 
-    public Order(){
-        this.id = UUID.randomUUID().toString();
-    }
+    @OneToMany(cascade = {CascadeType.ALL})
+    private Set<OrderItems> orderItems;
 
-    public String getId() {
-        return id;
-    }
+    @OneToMany(cascade = {CascadeType.ALL})
+    private Set<OrderPayment> orderPayments;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    @OneToOne(cascade = {CascadeType.ALL})
+    private Customer customer;
 
-    public String getCustomerId() {
-        return customerId;
-    }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
-
-    public ZonedDateTime getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(ZonedDateTime orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public ZonedDateTime getOrderCreationDate() {
-        return orderCreationDate;
-    }
-
-    public void setOrderCreationDate(ZonedDateTime orderCreationDate) {
-        this.orderCreationDate = orderCreationDate;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public List<OrderPayment> getPaymentList() {
-        return paymentList;
-    }
-
-    public void setPaymentList(List<OrderPayment> paymentList) {
-        this.paymentList = paymentList;
-    }
-
-    public List<OrderItems> getItemsList() {
-        return itemsList;
-    }
-
-    public void setItemsList(List<OrderItems> itemsList) {
-        this.itemsList = itemsList;
-    }
 }

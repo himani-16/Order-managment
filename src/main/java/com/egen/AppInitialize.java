@@ -10,7 +10,7 @@ public class AppInitialize extends AbstractAnnotationConfigDispatcherServletInit
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		//return new Class<?>[0];
-			return new Class[] {AppConfig.class};
+			return new Class[] {AppConfig.class, JPAConfig.class};
 	}
 
 	@Override
